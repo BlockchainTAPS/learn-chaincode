@@ -38,7 +38,7 @@ func main() {
 func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
 
 	var A, B string    // Entities
-	var Aval, Bval int // Asset holdings
+	var Aval, Bval int
 	var err error
 
 	if len(args) != 4 {
