@@ -38,7 +38,7 @@ func main() {
 func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
 
 	var A, B string    // Entities
-	var Aval, Bval int
+	var Aval, Bval float64
 	var err error
 
 	if len(args) != 4 {
@@ -47,24 +47,24 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
 
 	// Initialize the chaincode
 	A = args[0]
-	Aval, err = strconv.Atoi(args[1])
+	Aval, err = strconv.ParseFloat(args[1],64)
 	if err != nil {
 		return nil, errors.New("Expecting integer value for asset holding")
 	}
 	B = args[2]
-	Bval, err = strconv.Atoi(args[3])
+	Bval, err = strconv.ParseFloat(args[3],64)
 	if err != nil {
 		return nil, errors.New("Expecting integer value for asset holding")
 	}
 	fmt.Printf("Aval = %d, Bval = %d\n", Aval, Bval)
 
 	// Write the state to the ledger
-	err = stub.PutState(A, []byte(strconv.Itoa(Aval)))
+	err = stub.PutState(A, []byte(strconv.FormatFloat(Aval,'E', -1, 64)))
 	if err != nil {
 		return nil, err
 	}
 
-	err = stub.PutState(B, []byte(strconv.Itoa(Bval)))
+	err = stub.PutState(B, []byte(strconv.FormatFloat(Bval,'E', -1, 64)))
 	if err != nil {
 		return nil, err
 	}
@@ -150,8 +150,8 @@ func (t *SimpleChaincode) invoke(stub shim.ChaincodeStubInterface, args []string
 	fmt.Printf("Running invoke")
 
 	var A, B string    // Entities
-	var Aval, Bval int // Asset holdings
-	var X int          // Transaction value
+	var Aval, Bval float64 // Asset holdings
+	var X float64          // Transaction value
 	var err error
 
 	if len(args) != 3 {
@@ -170,7 +170,7 @@ func (t *SimpleChaincode) invoke(stub shim.ChaincodeStubInterface, args []string
 	if Avalbytes == nil {
 		return nil, errors.New("Entity not found")
 	}
-	Aval, _ = strconv.Atoi(string(Avalbytes))
+	Aval, _ = strconv.ParseFloat(string(Avalbytes),64)
 
 	Bvalbytes, err := stub.GetState(B)
 	if err != nil {
@@ -179,21 +179,21 @@ func (t *SimpleChaincode) invoke(stub shim.ChaincodeStubInterface, args []string
 	if Bvalbytes == nil {
 		return nil, errors.New("Entity not found")
 	}
-	Bval, _ = strconv.Atoi(string(Bvalbytes))
+	Bval, _ = strconv.ParseFloat(string(Bvalbytes),64)
 
 	// Perform the execution
-	X, err = strconv.Atoi(args[2])
+	X, err = strconv.ParseFloat(args[2],64)
 	Aval = Aval - X
 	Bval = Bval + X
 	fmt.Printf("Aval = %d, Bval = %d\n", Aval, Bval)
 
 	// Write the state back to the ledger
-	err = stub.PutState(A, []byte(strconv.Itoa(Aval)))
+	err = stub.PutState(A, []byte(strconv.FormatFloat(Aval, 'E' , -1 , 64)))
 	if err != nil {
 		return nil, err
 	}
 
-	err = stub.PutState(B, []byte(strconv.Itoa(Bval)))
+	err = stub.PutState(B, []byte(strconv.FormatFloat(Bval, 'E' , -1 , 64)))
 	if err != nil {
 		return nil, err
 	}
@@ -206,7 +206,7 @@ func (t *SimpleChaincode) delete(stub shim.ChaincodeStubInterface, args []string
 	fmt.Printf("Running delete")
 
 	if len(args) != 1 {
-		return nil, errors.New("Incorrect number of arguments. Expecting 3")
+		return nil, errors.New("Incorrect number of arguments. Expecting 1 only")
 	}
 
 	A := args[0]
