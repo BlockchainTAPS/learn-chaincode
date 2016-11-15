@@ -59,12 +59,12 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
 	fmt.Printf("Aval = %d, Bval = %d\n", Aval, Bval)
 
 	// Write the state to the ledger
-	err = stub.PutState(A, []byte(strconv.FormatFloat(Aval,'E', -1, 64)))
+	err = stub.PutState(A, []byte(strconv.FormatFloat(Aval,'f', -1, 64)))
 	if err != nil {
 		return nil, err
 	}
 
-	err = stub.PutState(B, []byte(strconv.FormatFloat(Bval,'E', -1, 64)))
+	err = stub.PutState(B, []byte(strconv.FormatFloat(Bval,'f', -1, 64)))
 	if err != nil {
 		return nil, err
 	}
@@ -188,12 +188,12 @@ func (t *SimpleChaincode) invoke(stub shim.ChaincodeStubInterface, args []string
 	fmt.Printf("Aval = %d, Bval = %d\n", Aval, Bval)
 
 	// Write the state back to the ledger
-	err = stub.PutState(A, []byte(strconv.FormatFloat(Aval, 'E' , -1 , 64)))
+	err = stub.PutState(A, []byte(strconv.FormatFloat(Aval, 'f' , -1 , 64)))
 	if err != nil {
 		return nil, err
 	}
 
-	err = stub.PutState(B, []byte(strconv.FormatFloat(Bval, 'E' , -1 , 64)))
+	err = stub.PutState(B, []byte(strconv.FormatFloat(Bval, 'f' , -1 , 64)))
 	if err != nil {
 		return nil, err
 	}
